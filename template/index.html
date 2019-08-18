@@ -1,3 +1,4 @@
+<!-- sorry, i can`t frontend -->
 <html>
 <head>
 	<style type="text/css">
@@ -69,26 +70,47 @@
 	</div>
 
 	
-
-	<div class="main_block">
-		{{range .Posts}}
-		<div class="post">	
-			<img src="/static/user_data/{{.Publisher}}_avatar.jpg" class="avatar_img">
-							
-			<div class="post_head">
-				<span class="publisher_name">{{.Publisher}}</span>
-				<br>
-				<span class="publsh_time">{{.PublishTime}}</span>
-			</div>
-			
-			<div class="post_data">
-				<p>{{.Text}}</p>
-			</div>
-		</div>
-		<br>
-		{{end}}
-
-
+	<div class="main_block" id="main_block">
 	</div>
 </body>
+	<script>
+		function ajax_get(url, callback) {
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					try {
+						var data = JSON.parse(xmlhttp.responseText);
+					} catch(err) {
+						return;
+					}
+					callback(data);
+				}
+			};
+
+			xmlhttp.open("GET", url, true);
+			xmlhttp.send();
+		}
+
+		function make_posts(posts) {
+			var mainBlock = document.getElementById("main_block");
+
+			posts.forEach(function(item) {
+				var post = document.createElement('div');
+				post.setAttribute("class", "post");
+				post.innerHTML = '<img src="/static/user_data/' + item.publisher + '_avatar.jpg" class="avatar_img">'+
+					'<div class="post_head">' +
+						'<span class="publisher_name">' + item.publisher + '</span>' +
+						'<br>' +
+						'<span class="publsh_time">' + item.publish_time + '</span>' +
+					'</div>' +
+					'<div class="post_data">' +
+						'<p>' + item.text + '</p>' +
+					'</div>';
+				mainBlock.appendChild(post);
+				mainBlock.appendChild(document.createElement('br'));
+			});
+		}
+
+		ajax_get("http://localhost:8080/api/posts", make_posts)
+	</script>
 </html>

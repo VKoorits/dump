@@ -30,6 +30,7 @@ func HandlePostsApi(w http.ResponseWriter, r *http.Request) {
 	}
 	postsJson, _ := json.Marshal(posts)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(postsJson))
 }
 
